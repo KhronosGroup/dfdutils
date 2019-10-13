@@ -10,7 +10,7 @@ is provided.
 
 interpretdfd.c provides the ability to interpret a data format
 descriptor for simple formats, and provides a simplified
-interface for these case.
+interface for this case.
 
 createdfd.c contains helpers for converting from Vulkan format
 enums to data format descriptors.
