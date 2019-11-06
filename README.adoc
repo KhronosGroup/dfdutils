@@ -1,16 +1,26 @@
 Khronos^(TM)^ Data Format Specification utilities
 =================================================
 
-This directory contains helper utilities for the Khronos
-data format specification.
-These are provided as examples rather than being intended for
+This directory contains helper utilities for the creating and
+interpreting data format descriptors as specified in Part 1 of the
+https://www.khronos.org/registry/DataFormat/specs/1.3/dataformat.1.3.html[Khronos
+Data Format Specification 1.3] (KDFS). KDFS Part 1 is referred to by the
+http://github.khronos.org/KTX-Specification/[KTX File Format
+Specification Version 2] and data format descriptors are embedded
+in `.ktx2` files.  The OpenGL^®^, OpenGL ES^™️^ and Vulkan^®^
+specifications refer to other parts of KDFS that specify color
+transforms and block-compressed texture formats.
+
+These utilities are provided as examples rather than being intended for
 use in production code (they are not robust to all possible
 input, even for legal data format descriptors), and no warranty
-is provided.
+is provided. They should however work with the subset of data format
+descriptors needed in `.ktx2` files.
 
 interpretdfd.c provides the ability to interpret a data format
 descriptor for simple formats, and provides a simplified
-interface for this case.
+interface for this case. It also contains a function giving
+the number and size of the components of a described.
 
 createdfd.c contains helpers for converting from Vulkan format
 enums to data format descriptors.
@@ -28,9 +38,30 @@ than being hard-wired.
 Since the resulting code depends highly on heuristics to
 identify existing format mappings, it is not robust against
 descriptors which did not originate as a Vulkan format.
-Note that only common color formats and depth formats are
+
+NOTE: Only common color formats and depth formats are
 supported; there's no support for multi-planar formats, for
 example.
 
-These utilities require access to vulkan.h for access to
-VkFormat.
+These utilities require access to vulkan_core.h for access to
+VkFormat. A version is provided in this repo as a temporary measure
+until the Vulkan extension for ASTC 3D formats is released and
+those enums appear in the standard vulkan_core.h.
+
+[IMPORTANT]
+====
+If you will be merging from `master` to `ktxsw` you need to set a simple
+merge driver in your `.git/config` by running the following commands.
+
+[source,sh]
+----
+git config merge.keepMine.name "Always keep mine during merge"
+git config merge.keepMine.driver true
+----
+
+You can add `--global` to the command if you want to put this in your
+global `.gitconfig`.
+
+====
+
+// vim: filetype=asciidoc ai expandtab tw=72 ts=4 sts=2 sw=2
