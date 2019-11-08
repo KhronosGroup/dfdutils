@@ -21,7 +21,7 @@ $(out)/testbidirectionalmapping: testbidirectionalmapping.c interpretdfd.c creat
 $(out)/docs: createdfd.c createdfdtest.c printdfd.c KHR/khr_df.h dfd.h | out
 	doxygen dfdutils.doxy
 
-out:
+build out:
 	mkdir -p $@
 
 clean:
@@ -36,3 +36,10 @@ dfd2vk.inl: vulkan/vulkan_core.h makedfdtovk.pl
 
 vk2dfd.inl: vulkan/vulkan_core.h makevkswitch.pl
 	./makevkswitch.pl $< $@
+
+# For those who wish to generate a project from the gyp file so
+# as to use xcode for debugging.
+xcodeproj: build/project.pbxproj
+build/project.pbxproj: dfdutils.gyp | build
+	gyp -f xcode -DOS=mac --generator-output=build --depth=.
+
