@@ -1,5 +1,2 @@
-# Test binaries
-testbidirectionalmapping
-testcreatedfd
-testinterpretdfd
-
+# Build output
+out
