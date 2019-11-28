@@ -18,7 +18,7 @@ $(out)/testinterpretdfd: createdfd.c interpretdfd.c interpretdfdtest.c printdfd.
 $(out)/testbidirectionalmapping: testbidirectionalmapping.c interpretdfd.c createdfd.c KHR/khr_df.h dfd.h | out
 	gcc testbidirectionalmapping.c interpretdfd.c createdfd.c -o $@ -I. $(if VULKAN_SDK,-I${VULKAN_SDK}/include) -g -W -Wall -std=c99 -pedantic
 
-$(out)/docs: createdfd.c createdfdtest.c printdfd.c KHR/khr_df.h dfd.h | out
+$(out)/doc: createdfd.c createdfdtest.c printdfd.c KHR/khr_df.h dfd.h | out
 	doxygen dfdutils.doxy
 
 build out:
@@ -28,6 +28,8 @@ clean:
 
 clobber: clean
 	rm -rf $(addprefix out/,${targets})
+
+doc: $(out)/doc
 
 switches: dfd2vk.inl vk2dfd.inl
 
