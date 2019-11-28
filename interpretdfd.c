@@ -17,13 +17,22 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * @~English
+ * @brief Utilities for getting info from a data format descriptor.
+ */
+
+/*
+ * author: Andrew Garrard
+ */
+
 #include <stdint.h>
 #include <stdio.h>
 #include <KHR/khr_df.h>
 #include "dfd.h"
 
 /**
- * @internal
  * @~English
  * @brief Interpret a Data Format Descriptor for a simple format.
  *
@@ -354,7 +363,6 @@ enum InterpretDFDResult interpretDFD(const uint32_t *DFD,
 }
 
 /**
- * @internal
  * @~English
  * @brief Get the number and size of the image components from a DFD.
  *
@@ -367,8 +375,8 @@ enum InterpretDFDResult interpretDFD(const uint32_t *DFD,
               the basic descriptor block.
  * @param numComponents pointer to a 32-bit word in which the number of
                         components will be written.
- * @param componentSizeInBytes pointer to a 32-bit word in which the size of
-                               a component in bytes will be written.
+ * @param componentByteLength pointer to a 32-bit word in which the size of
+                              a component in bytes will be written.
  */
 void
 getDFDComponentInfoUnpacked(const uint32_t* DFD, uint32_t* numComponents,
