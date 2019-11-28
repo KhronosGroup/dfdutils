@@ -1,7 +1,0 @@
-# Avoid constant merge conflicts with files deleted in ktxsw branch.
-KHR merge=keepMine
-Makefile merge=keepMine
-README.adoc merge=keepMine
-createdfdtest.c merge=keepMine
-interpretdfdtest.c merge=keepMine
-testbidirectionalmapping.c merge=keepMine
