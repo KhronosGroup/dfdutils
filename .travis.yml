@@ -64,12 +64,10 @@ script:
 - |
   case "${TRAVIS_OS_NAME:-linux}" in
   linux)
-    make &&
-    make doc
+    make
     ;;
   osx)
-    make &&
-    make doc
+    make
     ;;
     esac
 
