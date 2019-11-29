@@ -32,6 +32,8 @@ debugging.a
 `vk2dfd.c` creates a DFD describing a `VkFormat` and `dfd2vk.c`
 returns the VkFormat matching a DFD.
 
+API documentation can be found http://github.khronos.org/dfdutils/[here].
+
 makevkswitch.pl and makedfdtovk.pl generate the code used by
 `vk2dfd.c` and `dfd2vk.c` to convert from Vulkan enums to data
 format descriptors and back again; these should be run with the
