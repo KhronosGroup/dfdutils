@@ -387,29 +387,21 @@ getDFDComponentInfoUnpacked(const uint32_t* DFD, uint32_t* numComponents,
                           / (4 * KHR_DF_WORD_SAMPLEWORDS);
     uint32_t sampleCounter;
     uint32_t currentChannel = ~0U; /* Don't start matched. */
-    uint32_t currentByteOffset = 0;
-    uint32_t currentByteLength = 0;
 
     /* This is specifically for unpacked formats which means the size of */
     /* each component is the same. */
     *numComponents = 0;
     for (sampleCounter = 0; sampleCounter < numSamples; ++sampleCounter) {
-        uint32_t sampleByteOffset = KHR_DFDSVAL(BDFDB, sampleCounter, BITOFFSET) >> 3U;
         uint32_t sampleByteLength = (KHR_DFDSVAL(BDFDB, sampleCounter, BITLENGTH) + 1) >> 3U;
         uint32_t sampleChannel = KHR_DFDSVAL(BDFDB, sampleCounter, CHANNELID);
 
         if (sampleChannel == currentChannel) {
             /* Continuation of the same channel. */
-            /* Remember where we are. */
-            currentByteOffset = sampleByteOffset;
-            currentByteLength = sampleByteLength;
             /* Accumulate the byte length. */
             *componentByteLength += sampleByteLength;
         } else {
             /* Everything is new. Hopefully. */
             currentChannel = sampleChannel;
-            currentByteOffset = sampleByteOffset;
-            currentByteLength = sampleByteLength;
             (*numComponents)++;
             *componentByteLength = sampleByteLength;
         }
