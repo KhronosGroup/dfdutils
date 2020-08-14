@@ -1,3 +1,6 @@
+# Copyright 2019-2020 The Khronos Group Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 # CI build script for Travis.
 # See https://docs.travis-ci.com/user/multi-os/ for more info.
 
@@ -75,7 +78,7 @@ script:
     ;;
     esac
 
-# Errors in something run in after_success: don't cause the build to fail so don't use. 
+# Errors in something run in after_success: don't cause the build to fail so don't use.
 
 deploy:
   provider: pages
