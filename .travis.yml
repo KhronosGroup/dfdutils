@@ -4,6 +4,10 @@
 # CI build script for Travis.
 # See https://docs.travis-ci.com/user/multi-os/ for more info.
 
+branches:
+  except:
+  - ktxsw
+
 language:
   - cpp
   - node_js
@@ -19,7 +23,7 @@ matrix:
           packages:
             - gcc-7
             - g++-7
-      dist: xenial
+      dist: bionic
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
         - VULKAN_SDK_VER="1.1.85"
