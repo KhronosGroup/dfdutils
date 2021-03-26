@@ -8,11 +8,8 @@
 /**
  * @file
  * @~English
- * @brief Utilities for getting info from a data format descriptor.
- */
-
-/*
- * author: Andrew Garrard
+ * @brief Utilitiy for interpreting a data format descriptor.
+ * @author Andrew Garrard
  */
 
 #include <stdint.h>
@@ -56,10 +53,7 @@ enum InterpretDFDResult interpretDFD(const uint32_t *DFD,
     /* Make everything else relative to the basic descriptor block. */
     const uint32_t *BDFDB = DFD+1;
 
-    /* BDFDB size in bytes in BDFDB[1] >> 16, 24 byte header, 16 bytes/sample. */
-    /* We assume the compiler can treat "/16" sensibly. */
-    uint32_t numSamples = (KHR_DFDVAL(BDFDB, DESCRIPTORBLOCKSIZE) - 24U)
-        / (4 * KHR_DF_WORD_SAMPLEWORDS);
+    uint32_t numSamples = KHR_DFDSAMPLECOUNT(BDFDB);
 
     uint32_t sampleCounter;
     int determinedEndianness = 0;
@@ -195,7 +189,7 @@ enum InterpretDFDResult interpretDFD(const uint32_t *DFD,
         uint32_t currentBitOffset = 0;
         uint32_t currentByteOffset = 0;
         uint32_t currentBitLength = 0;
-        *wordBytes = (BDFDB[4] & 0xFFU);
+        *wordBytes = (BDFDB[KHR_DF_WORD_BYTESPLANE0] & 0xFFU);
         for (sampleCounter = 0; sampleCounter < numSamples; ++sampleCounter) {
             uint32_t sampleBitOffset = KHR_DFDSVAL(BDFDB, sampleCounter, BITOFFSET);
             uint32_t sampleByteOffset = sampleBitOffset >> 3U;
@@ -348,50 +342,4 @@ enum InterpretDFDResult interpretDFD(const uint32_t *DFD,
         }
     }
     return result;
-}
-
-/**
- * @~English
- * @brief Get the number and size of the image components from a DFD.
- *
- * This simplified function is for use only with the DFDs for unpacked
- * formats which means all components have the same size.
- *
- * @param DFD Pointer to a Data Format Descriptor to interpret,
-              described as 32-bit words in native endianness.
-              Note that this is the whole descriptor, not just
-              the basic descriptor block.
- * @param numComponents pointer to a 32-bit word in which the number of
-                        components will be written.
- * @param componentByteLength pointer to a 32-bit word in which the size of
-                              a component in bytes will be written.
- */
-void
-getDFDComponentInfoUnpacked(const uint32_t* DFD, uint32_t* numComponents,
-                            uint32_t* componentByteLength)
-{
-    const uint32_t *BDFDB = DFD+1;
-    uint32_t numSamples = (KHR_DFDVAL(BDFDB, DESCRIPTORBLOCKSIZE) - 24U)
-                          / (4 * KHR_DF_WORD_SAMPLEWORDS);
-    uint32_t sampleCounter;
-    uint32_t currentChannel = ~0U; /* Don't start matched. */
-
-    /* This is specifically for unpacked formats which means the size of */
-    /* each component is the same. */
-    *numComponents = 0;
-    for (sampleCounter = 0; sampleCounter < numSamples; ++sampleCounter) {
-        uint32_t sampleByteLength = (KHR_DFDSVAL(BDFDB, sampleCounter, BITLENGTH) + 1) >> 3U;
-        uint32_t sampleChannel = KHR_DFDSVAL(BDFDB, sampleCounter, CHANNELID);
-
-        if (sampleChannel == currentChannel) {
-            /* Continuation of the same channel. */
-            /* Accumulate the byte length. */
-            *componentByteLength += sampleByteLength;
-        } else {
-            /* Everything is new. Hopefully. */
-            currentChannel = sampleChannel;
-            (*numComponents)++;
-            *componentByteLength = sampleByteLength;
-        }
-    }
 }

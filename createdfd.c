@@ -236,27 +236,30 @@ uint32_t *createDFDPacked(int bigEndian, int numChannels,
         writeSample(DFD, 0, 0,
                     9, 0,
                     1, 1, s_UNORM);
-        KHR_DFDSETSVAL((DFD+1), 0, SAMPLEUPPER, 256);
+        KHR_DFDSETSVAL((DFD+1), 0, SAMPLEUPPER, 8448);
         writeSample(DFD, 1, 0 | KHR_DF_SAMPLE_DATATYPE_EXPONENT,
                     5, 27,
                     1, 1, s_UNORM);
-        KHR_DFDSETSVAL((DFD+1), 1, SAMPLEUPPER, 15);
+        KHR_DFDSETSVAL((DFD+1), 1, SAMPLELOWER, 15);
+        KHR_DFDSETSVAL((DFD+1), 1, SAMPLEUPPER, 31);
         writeSample(DFD, 2, 1,
                     9, 9,
                     1, 1, s_UNORM);
-        KHR_DFDSETSVAL((DFD+1), 2, SAMPLEUPPER, 256);
+        KHR_DFDSETSVAL((DFD+1), 2, SAMPLEUPPER, 8448);
         writeSample(DFD, 3, 1 | KHR_DF_SAMPLE_DATATYPE_EXPONENT,
                     5, 27,
                     1, 1, s_UNORM);
-        KHR_DFDSETSVAL((DFD+1), 3, SAMPLEUPPER, 15);
-        writeSample(DFD, 4, 3,
+        KHR_DFDSETSVAL((DFD+1), 3, SAMPLELOWER, 15);
+        KHR_DFDSETSVAL((DFD+1), 3, SAMPLEUPPER, 31);
+        writeSample(DFD, 4, 2,
                     9, 18,
                     1, 1, s_UNORM);
-        KHR_DFDSETSVAL((DFD+1), 4, SAMPLEUPPER, 256);
-        writeSample(DFD, 5, 3 | KHR_DF_SAMPLE_DATATYPE_EXPONENT,
+        KHR_DFDSETSVAL((DFD+1), 4, SAMPLEUPPER, 8448);
+        writeSample(DFD, 5, 2 | KHR_DF_SAMPLE_DATATYPE_EXPONENT,
                     5, 27,
                     1, 1, s_UNORM);
-        KHR_DFDSETSVAL((DFD+1), 5, SAMPLEUPPER, 15);
+        KHR_DFDSETSVAL((DFD+1), 5, SAMPLELOWER, 15);
+        KHR_DFDSETSVAL((DFD+1), 5, SAMPLEUPPER, 31);
     } else if (bigEndian) {
         /* No packed format is larger than 32 bits. */
         /* No packed channel crosses more than two bytes. */
@@ -392,7 +395,7 @@ static khr_df_model_channels_e compFirstChannel[] = {
     KHR_DF_CHANNEL_ETC2_RED,          /*!< R11 ETC2 single-channel. */
     KHR_DF_CHANNEL_ETC2_RED,          /*!< R11G11 ETC2 dual-channel. */
     KHR_DF_CHANNEL_ASTC_DATA,         /*!< ASTC. */
-    KHR_DF_CHANNEL_ETC1S_COLOR,       /*!< ETC1S. */
+    KHR_DF_CHANNEL_ETC1S_RGB,         /*!< ETC1S. */
     KHR_DF_CHANNEL_PVRTC_COLOR,       /*!< PVRTC. */
     KHR_DF_CHANNEL_PVRTC2_COLOR       /*!< PVRTC2. */
 };
@@ -412,7 +415,7 @@ static khr_df_model_channels_e compSecondChannel[] = {
     KHR_DF_CHANNEL_ETC2_RED,          /*!< R11 ETC2 single-channel. */
     KHR_DF_CHANNEL_ETC2_GREEN,        /*!< R11G11 ETC2 dual-channel. */
     KHR_DF_CHANNEL_ASTC_DATA,         /*!< ASTC. */
-    KHR_DF_CHANNEL_ETC1S_COLOR,       /*!< ETC1S. */
+    KHR_DF_CHANNEL_ETC1S_RGB,         /*!< ETC1S. */
     KHR_DF_CHANNEL_PVRTC_COLOR,       /*!< PVRTC. */
     KHR_DF_CHANNEL_PVRTC2_COLOR       /*!< PVRTC2. */
 };
