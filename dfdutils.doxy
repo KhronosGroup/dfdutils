@@ -764,8 +764,9 @@ WARN_LOGFILE           =
 # Include files by name so only the public API and structures are documented.
 # This works around a Doxygen bug which makes it issue "undocumented compound"
 # warnings for structures documented with @internal when INTERNAL_DOCS = NO.
-INPUT                  = LICENSE \
+INPUT                  = LICENSE.adoc \
                          dfd.h \
+                         colourspaces.c \
                          createdfd.c \
                          dfd2vk.c \
                          interpretdfd.c \

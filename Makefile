@@ -21,7 +21,7 @@ $(out)/testinterpretdfd: createdfd.c interpretdfd.c interpretdfdtest.c printdfd.
 $(out)/testbidirectionalmapping: testbidirectionalmapping.c interpretdfd.c createdfd.c dfd2vk.c dfd2vk.inl vk2dfd.c vk2dfd.inl KHR/khr_df.h dfd.h | out
 	gcc testbidirectionalmapping.c interpretdfd.c createdfd.c -o $@ -I. $(if VULKAN_SDK,-I${VULKAN_SDK}/include) -g -W -Wall -std=c99 -pedantic
 
-$(out)/doc: createdfd.c createdfdtest.c printdfd.c KHR/khr_df.h dfd.h | out
+$(out)/doc: colourspaces.c createdfd.c createdfdtest.c printdfd.c queries.c KHR/khr_df.h dfd.h | out
 	doxygen dfdutils.doxy
 
 build out:
