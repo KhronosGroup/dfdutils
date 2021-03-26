@@ -17,21 +17,29 @@ transforms and block-compressed texture formats.
 
 These utilities are provided as examples rather than being intended for
 use in production code (they are not robust to all possible
-input, even for legal data format descriptors), and no warranty
+input, even for legal data format descriptors) and no warranty
 is provided. They should however work with the subset of data format
 descriptors needed in `.ktx2` files.
 
-`interpretdfd.c` provides the ability to interpret a data format
-descriptor for simple formats, and provides a simplified
-interface for this case. It also contains a function giving
-the number and size of the components of a described.
+`colorspaces.c` contains a helper function for finding a mapping from a
+set of color primarie values to a KDFS primaries enum.
 
 `createdfd.c` contains helpers for converting from Vulkan format
 enums to data format descriptors.
 
+`interpretdfd.c` provides the ability to interpret a data format
+descriptor for simple formats, and provides a simplified
+interface for this case.
+
 `printdfd.c` produces a (fairly) human-readable description of
 the fields of a data format descriptor, intended to assist with
-debugging.a
+debugging.
+
+`queries.c` contains functions to query the component information
+of a descriptor for an unpacked format and the number of components
+in the described format. It also contains a utility function to
+recreate the `bytesPlane0` value of a DFD for data that is being
+inflated from supercomoression.
 
 `vk2dfd.c` creates a DFD describing a `VkFormat` and `dfd2vk.c`
 returns the VkFormat matching a DFD.
