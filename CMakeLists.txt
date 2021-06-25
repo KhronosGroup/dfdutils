@@ -8,6 +8,8 @@ HunterGate(
 
 project(dfdutils VERSION 0.0.0)
 
+option(BUILD_TESTS "Build test executables" OFF)
+
 hunter_add_package(KhronosDataFormat)
 find_package(KhronosDataFormat CONFIG REQUIRED)
 
@@ -47,10 +49,26 @@ include(GNUInstallDirs)
 target_sources(dfdutils PRIVATE ${DFDUTILS_SRC_FILES} ${DFDUTILS_HDR_FILES})
 target_link_libraries(dfdutils PRIVATE Vulkan::Headers)
 target_link_libraries(dfdutils PUBLIC Khronos::KhronosDataFormat)
-target_include_directories(dfdutils PRIVATE ${GENERATED_DIR})
+target_include_directories(dfdutils PUBLIC
+    $<BUILD_INTERFACE:${GENERATED_DIR}>)
 target_include_directories(dfdutils PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}>)
+
+# Tests
+
+if(BUILD_TESTS)
+    add_executable(testcreatedfd test/createdfdtest.c)
+    target_link_libraries(testcreatedfd PRIVATE dfdutils)
+
+    add_executable(testinterpretdfd test/interpretdfdtest.c)
+    target_link_libraries(testinterpretdfd PRIVATE dfdutils)
+
+    add_executable(testbidirectionalmapping test/testbidirectionalmapping.c)
+    target_link_libraries(testbidirectionalmapping PRIVATE dfdutils)
+endif()
+
+# Installation
 
 set(VERSION_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}ConfigVersion.cmake")
 set(PROJECT_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
