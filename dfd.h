@@ -18,7 +18,7 @@
 #ifndef _DFD_H_
 #define _DFD_H_
 
-#include <KHR/khr_df.h>
+#include <KhronosGroup/khr_df.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,7 +63,7 @@ typedef unsigned int uint32_t;
 #if !defined(LIBKTX)
 #include <vulkan/vulkan_core.h>
 #else
-#include "../vkformat_enum.h"
+#include "vkformat_enum.h"
 #endif
 
 uint32_t* vk2dfd(enum VkFormat format);
