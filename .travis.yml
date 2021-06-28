@@ -58,8 +58,20 @@ before_script:
 
 script:
 - |
-    cmake -H. -B _build -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
+  case $TRAVIS_OS_NAME in
+  linux)
+    cmake -H. -B _build -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON -DCMAKE_BUILD_TYPE=Release
+    cmake --build _build --target install
+    ;;
+  osx)
+    cmake -H. -B _build -G "Xcode" -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
     cmake --build _build --target INSTALL --config Release
+    ;;
+  windows)
+    cmake -H. -B _build -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
+    cmake --build _build --target INSTALL --config Release
+    ;;
+  esac
 
 # Errors in something run in after_success: don't cause the build to fail so don't use.
 

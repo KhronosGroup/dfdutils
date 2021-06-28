@@ -46,6 +46,28 @@ returns the VkFormat matching a DFD.
 
 API documentation can be found http://github.khronos.org/dfdutils/[here].
 
+[Building]
+`cmake` is used to build the code. Example build instructions can be found in
+`.travis.yml`, but are replicated here for development use.
+
+Linux:
+```
+cmake -H. -B _build -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build _build --target install
+```
+
+Mac:
+```
+cmake -H. -B _build -G "Xcode" -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
+cmake --build _build --target INSTALL --config Release
+```
+
+Windows:
+```
+cmake -H. -B _build -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
+cmake --build _build --target INSTALL --config Release
+```
+
 makevkswitch.pl and makedfdtovk.pl generate the code used by
 `vk2dfd.c` and `dfd2vk.c` to convert from Vulkan enums to data
 format descriptors and back again; these should be run with the
@@ -53,7 +75,8 @@ Vulkan header (or the format enum subset of it) as input, since
 they heuristically support formats named in the header rather than
 being hard-wired.  As the resulting code depends highly on
 heuristics to identify existing format mappings, it is not robust
-against descriptors which did not originate as a Vulkan format.
+against descriptors which did not originate as a Vulkan format. These
+scripts are automatically run when using CMake.
 
 NOTE: Only common color formats and depth formats are
 supported; there's no support for multi-planar formats, for
@@ -73,9 +96,9 @@ write to the second.
 [NOTE]
 ====
 These utilities require access to vulkan_core.h for access to
-VkFormat. A version is provided in this repo as a temporary measure
-until the Vulkan extension for ASTC 3D formats is released and
-those enums appear in the standard vulkan_core.h.
+VkFormat. A version is downloaded and patch in this repo's CMake scripts
+as a temporary measure until the Vulkan extension for ASTC 3D formats is
+released and those enums appear in the standard vulkan_core.h.
 ====
 
 // vim: filetype=asciidoc ai expandtab tw=72 ts=4 sts=2 sw=2
