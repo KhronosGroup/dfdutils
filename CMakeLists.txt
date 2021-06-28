@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-option(BUILD_TESTS "Build test executables" ON)
+option(BUILD_TESTS "Build test executables" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 option(HUNTER_ENABLED "Use the Hunter package manager" OFF)
 
@@ -13,6 +13,7 @@ if(HUNTER_ENABLED)
 endif()
 
 project(dfdutils VERSION 0.0.0)
+set(VULKAN_HEADERS_VERSION "1.2.182" CACHE STRING "Version of Vulkan Headers to use (patch in third_party/ must apply).")
 
 if(HUNTER_ENABLED)
     hunter_add_package(KhronosDataFormat)
@@ -24,8 +25,22 @@ if(HUNTER_ENABLED)
     get_target_property(DataFormat_INCLUDE_DIR Khronos::KhronosDataFormat INTERFACE_INCLUDE_DIRECTORIES)
     get_target_property(Vulkan_INCLUDE_DIR Vulkan::Headers INTERFACE_INCLUDE_DIRECTORIES)
 else()
-    set(DataFormat_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
-    set(Vulkan_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party")
+    include(FetchContent)
+    FetchContent_Declare(
+        khronosdataformat
+        URL https://github.com/KhronosGroup/DataFormat/archive/1f8c8529b712e4b2b17bde798636d9ea550af3ed.tar.gz
+    )
+    FetchContent_Populate(khronosdataformat)
+    file(INSTALL "${khronosdataformat_SOURCE_DIR}/headers/khr_df.h" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/third_party/KhronosGroup")
+    set(DataFormat_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/third_party")
+
+    FetchContent_Declare(
+        vulkanheaders
+        URL https://github.com/KhronosGroup/Vulkan-Headers/archive/refs/tags/v${VULKAN_HEADERS_VERSION}.tar.gz
+    )
+    FetchContent_Populate(vulkanheaders)
+    file(INSTALL "${vulkanheaders_SOURCE_DIR}/include/vulkan" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/third_party")
+    set(Vulkan_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/third_party")
 endif()
 
 set(GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
@@ -144,6 +159,15 @@ install(
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
 
+if(NOT HUNTER_ENABLED)
+    install(
+        FILES "${GENERATED_DIR}/KhronosGroup/khr_df.h"
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/KhronosGroup
+    )
+    target_include_directories(dfdutils PUBLIC
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+endif()
+
 install(
     FILES "${PROJECT_CONFIG}" "${VERSION_CONFIG}"
     DESTINATION "${CONFIG_INSTALL_DIR}"
@@ -157,7 +181,7 @@ install(
 
 if(BUILD_DOCS)
     install(
-        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/doc
+        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/doc/
         DESTINATION ${CMAKE_INSTALL_DOCDIR}
     )
 endif()
