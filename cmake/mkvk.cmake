@@ -68,7 +68,7 @@ list(APPEND mkvkformatfiles_output
 
 add_custom_command(OUTPUT ${mkvkformatfiles_output}
     COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-    COMMAND ${BASH_EXECUTABLE} $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "Vulkan_INCLUDE_DIR=${GENERATED_DIR} ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles ${GENERATED_DIR}"
+    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "Vulkan_INCLUDE_DIR=${GENERATED_DIR} ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles ${GENERATED_DIR}"
     COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_enum.h>
     COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_check.c>
     COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_str.c>

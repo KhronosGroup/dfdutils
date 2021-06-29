@@ -96,7 +96,7 @@ write to the second.
 [NOTE]
 ====
 These utilities require access to vulkan_core.h for access to
-VkFormat. A version is downloaded and patch in this repo's CMake scripts
+VkFormat. A version is downloaded and patched in this repo's CMake scripts
 as a temporary measure until the Vulkan extension for ASTC 3D formats is
 released and those enums appear in the standard vulkan_core.h.
 ====

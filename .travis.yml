@@ -65,7 +65,7 @@ script:
     ;;
   osx)
     cmake -H. -B _build -G "Xcode" -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
-    cmake --build _build --target INSTALL --config Release
+    cmake --build _build --target ALL_BUILD --config Release
     ;;
   windows)
     cmake -H. -B _build -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=install -DBUILD_TESTS=ON -DBUILD_DOCS=ON
