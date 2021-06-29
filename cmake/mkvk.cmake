@@ -46,7 +46,7 @@ add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
     COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
     COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-    COMMAND ${BASH_EXECUTABLE} $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch"
+    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch"
     DEPENDS ${mkvkpatchvulkansources_input}
     WORKING_DIRECTORY ${GENERATED_DIR}
     COMMENT "Patching Vulkan headers"
