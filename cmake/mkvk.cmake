@@ -26,7 +26,7 @@ if(NOT HUNTER_ENABLED)
         add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
             COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
             COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-            COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch"
+            COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch || true"
             DEPENDS ${mkvkpatchdataformatsources_input}
             WORKING_DIRECTORY ${GENERATED_DIR}
             COMMENT "Patching DataFormat header"
@@ -36,7 +36,7 @@ if(NOT HUNTER_ENABLED)
         add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
             COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
             COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-            COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch
+            COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch || true
             DEPENDS ${mkvkpatchdataformatsources_input}
             WORKING_DIRECTORY ${GENERATED_DIR}
             COMMENT "Patching DataFormat header"
@@ -62,7 +62,7 @@ if(CMAKE_HOST_WIN32)
         COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
         COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-        COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch"
+        COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch || true"
         DEPENDS ${mkvkpatchvulkansources_input}
         WORKING_DIRECTORY ${GENERATED_DIR}
         COMMENT "Patching Vulkan headers"
@@ -73,7 +73,7 @@ else()
         COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
         COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-        COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch
+        COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch || true
         DEPENDS ${mkvkpatchvulkansources_input}
         WORKING_DIRECTORY ${GENERATED_DIR}
         COMMENT "Patching Vulkan headers"
