@@ -12,6 +12,9 @@ if(NOT PERL_FOUND)
     message(FATAL ERROR "Perl not found, can't generate Vulkan sources!")
 endif()
 
+# What a shame! We have to duplicate most of the build commands because
+# CMake's generator expressions don't handle empty strings well cross-platform (ex. Xcode fails on "" but Makefiles succeed).
+
 # Hunter DataFormat source is already patched
 if(NOT HUNTER_ENABLED)
     list(APPEND mkvkpatchdataformatsources_input
@@ -19,16 +22,27 @@ if(NOT HUNTER_ENABLED)
     list(APPEND mkvkpatchdataformatsources_output
         "${GENERATED_DIR}/KhronosGroup/khr_df.h")
 
-    add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-        COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> -c patch\ -p2\ -i\ ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch
-        COMMAND $<$<NOT:$<BOOL:${CMAKE_HOST_WIN32}>>:patch> -p2 -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch
-        DEPENDS ${mkvkpatchdataformatsources_input}
-        WORKING_DIRECTORY ${GENERATED_DIR}
-        COMMENT "Patching DataFormat header"
-        VERBATIM
-    )
+    if(CMAKE_HOST_WIN32)
+        add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+            COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
+            COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch"
+            DEPENDS ${mkvkpatchdataformatsources_input}
+            WORKING_DIRECTORY ${GENERATED_DIR}
+            COMMENT "Patching DataFormat header"
+            VERBATIM
+        )
+    else()
+        add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+            COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
+            COMMAND patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch
+            DEPENDS ${mkvkpatchdataformatsources_input}
+            WORKING_DIRECTORY ${GENERATED_DIR}
+            COMMENT "Patching DataFormat header"
+            VERBATIM
+        )
+    endif()
 
     add_custom_target(mkvkpatchdataformatsources
         DEPENDS ${mkvkpatchdataformatsources_output}
@@ -43,17 +57,29 @@ list(APPEND mkvkpatchvulkansources_output
     "${GENERATED_DIR}/vulkan/vulkan_core.h"
     "${GENERATED_DIR}/vulkan/vk_platform.h")
 
-add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
-    COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> patch\ -p2\ -i\ ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch
-    COMMAND $<$<NOT:$<BOOL:${CMAKE_HOST_WIN32}>>:patch> -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch
-    DEPENDS ${mkvkpatchvulkansources_input}
-    WORKING_DIRECTORY ${GENERATED_DIR}
-    COMMENT "Patching Vulkan headers"
-    VERBATIM
-)
+if(CMAKE_HOST_WIN32)
+    add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
+        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
+        COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch"
+        DEPENDS ${mkvkpatchvulkansources_input}
+        WORKING_DIRECTORY ${GENERATED_DIR}
+        COMMENT "Patching Vulkan headers"
+        VERBATIM
+    )
+else()
+    add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
+        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
+        COMMAND patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch
+        DEPENDS ${mkvkpatchvulkansources_input}
+        WORKING_DIRECTORY ${GENERATED_DIR}
+        COMMENT "Patching Vulkan headers"
+        VERBATIM
+    )
+endif()
 
 add_custom_target(mkvkpatchvulkansources
     DEPENDS ${mkvkpatchvulkansources_output}
@@ -68,18 +94,28 @@ list(APPEND mkvkformatfiles_output
     "${GENERATED_DIR}/vkformat_check.c"
     "${GENERATED_DIR}/vkformat_str.c")
 
-add_custom_command(OUTPUT ${mkvkformatfiles_output}
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> Vulkan_INCLUDE_DIR=${GENERATED_DIR}\ ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles\ ${GENERATED_DIR}
-    COMMAND $<$<NOT:$<BOOL:${CMAKE_HOST_WIN32}>>:Vulkan_INCLUDE_DIR=${GENERATED_DIR}> ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles ${GENERATED_DIR}
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_enum.h>
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_check.c>
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_str.c>
-    DEPENDS ${mkvkformatfiles_input}
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating VkFormat-related source files"
-    VERBATIM
-)
+if(CMAKE_HOST_WIN32)
+    add_custom_command(OUTPUT ${mkvkformatfiles_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${BASH_EXECUTABLE} -c "Vulkan_INCLUDE_DIR=${GENERATED_DIR} ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles ${GENERATED_DIR}"
+        COMMAND ${BASH_EXECUTABLE} -c "unix2dos ${GENERATED_DIR}/vkformat_enum.h"
+        COMMAND ${BASH_EXECUTABLE} -c "unix2dos ${GENERATED_DIR}/vkformat_check.c"
+        COMMAND ${BASH_EXECUTABLE} -c "unix2dos ${GENERATED_DIR}/vkformat_str.c"
+        DEPENDS ${mkvkformatfiles_input}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating VkFormat-related source files"
+        VERBATIM
+    )
+else()
+    add_custom_command(OUTPUT ${mkvkformatfiles_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND Vulkan_INCLUDE_DIR=${GENERATED_DIR} ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles ${GENERATED_DIR}
+        DEPENDS ${mkvkformatfiles_input}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating VkFormat-related source files"
+        VERBATIM
+    )
+endif()
 
 add_custom_target(mkvkformatfiles
     DEPENDS ${mkvkformatfiles_output}
@@ -91,16 +127,29 @@ list(APPEND makevkswitch_input
     "${PROJECT_SOURCE_DIR}/makevkswitch.pl")
 set(makevkswitch_output
     "${GENERATED_DIR}/vk2dfd.inl")
-add_custom_command(
-    OUTPUT ${makevkswitch_output}
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-    COMMAND ${PERL_EXECUTABLE} makevkswitch.pl ${GENERATED_DIR}/vkformat_enum.h ${GENERATED_DIR}/vk2dfd.inl
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vk2dfd.inl>
-    DEPENDS ${makevkswitch_input}
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating VkFormat/DFD switch body"
-    VERBATIM
-)
+
+if(CMAKE_HOST_WIN32)
+    add_custom_command(
+        OUTPUT ${makevkswitch_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${PERL_EXECUTABLE} makevkswitch.pl ${GENERATED_DIR}/vkformat_enum.h ${GENERATED_DIR}/vk2dfd.inl
+        COMMAND ${BASH_EXECUTABLE} -c "unix2dos ${GENERATED_DIR}/vk2dfd.inl"
+        DEPENDS ${makevkswitch_input}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating VkFormat/DFD switch body"
+        VERBATIM
+    )
+else()
+    add_custom_command(
+        OUTPUT ${makevkswitch_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${PERL_EXECUTABLE} makevkswitch.pl ${GENERATED_DIR}/vkformat_enum.h ${GENERATED_DIR}/vk2dfd.inl
+        DEPENDS ${makevkswitch_input}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating VkFormat/DFD switch body"
+        VERBATIM
+    )
+endif()
 
 add_custom_target(makevkswitch
     DEPENDS ${makevkswitch_output}
@@ -114,16 +163,28 @@ list(APPEND makedfd2vk_input
 list(APPEND makedfd2vk_output
     "${GENERATED_DIR}/dfd2vk.inl")
 
-add_custom_command(
-    OUTPUT ${makedfd2vk_output}
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-    COMMAND ${PERL_EXECUTABLE} makedfd2vk.pl ${GENERATED_DIR}/vkformat_enum.h ${GENERATED_DIR}/dfd2vk.inl
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/dfd2vk.inl>
-    DEPENDS ${makedfd2vk_input}
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating DFD/VkFormat switch body"
-    VERBATIM
-)
+if(CMAKE_HOST_WIN32)
+    add_custom_command(
+        OUTPUT ${makedfd2vk_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${PERL_EXECUTABLE} makedfd2vk.pl ${GENERATED_DIR}/vkformat_enum.h ${GENERATED_DIR}/dfd2vk.inl
+        COMMAND ${BASH_EXECUTABLE} -c "unix2dos ${GENERATED_DIR}/dfd2vk.inl"
+        DEPENDS ${makedfd2vk_input}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating DFD/VkFormat switch body"
+        VERBATIM
+    )
+else()
+    add_custom_command(
+        OUTPUT ${makedfd2vk_output}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+        COMMAND ${PERL_EXECUTABLE} makedfd2vk.pl ${GENERATED_DIR}/vkformat_enum.h ${GENERATED_DIR}/dfd2vk.inl
+        DEPENDS ${makedfd2vk_input}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating DFD/VkFormat switch body"
+        VERBATIM
+    )
+endif()
 
 add_custom_target(makedfd2vk
     DEPENDS ${makedfd2vk_output}
