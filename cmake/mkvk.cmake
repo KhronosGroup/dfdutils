@@ -22,7 +22,8 @@ if(NOT HUNTER_ENABLED)
     add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
         COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
         COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-        COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch"
+        COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> -c patch\ -p2\ -i\ ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch
+        COMMAND $<$<NOT:$<BOOL:${CMAKE_HOST_WIN32}>>:patch> -p2 -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch
         DEPENDS ${mkvkpatchdataformatsources_input}
         WORKING_DIRECTORY ${GENERATED_DIR}
         COMMENT "Patching DataFormat header"
@@ -46,7 +47,8 @@ add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
     COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
     COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "patch -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch"
+    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> patch\ -p2\ -i\ ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch
+    COMMAND $<$<NOT:$<BOOL:${CMAKE_HOST_WIN32}>>:patch> -p2 -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch
     DEPENDS ${mkvkpatchvulkansources_input}
     WORKING_DIRECTORY ${GENERATED_DIR}
     COMMENT "Patching Vulkan headers"
@@ -68,7 +70,8 @@ list(APPEND mkvkformatfiles_output
 
 add_custom_command(OUTPUT ${mkvkformatfiles_output}
     COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> "Vulkan_INCLUDE_DIR=${GENERATED_DIR} ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles ${GENERATED_DIR}"
+    COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> Vulkan_INCLUDE_DIR=${GENERATED_DIR}\ ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles\ ${GENERATED_DIR}
+    COMMAND $<$<NOT:$<BOOL:${CMAKE_HOST_WIN32}>>: Vulkan_INCLUDE_DIR=${GENERATED_DIR}\ ${PROJECT_SOURCE_DIR}/cmake/mkvkformatfiles\ ${GENERATED_DIR}>
     COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_enum.h>
     COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_check.c>
     COMMAND $<$<BOOL:${CMAKE_HOST_WIN32}>:${BASH_EXECUTABLE}> $<$<BOOL:${CMAKE_HOST_WIN32}>:-c> $<$<BOOL:${CMAKE_HOST_WIN32}>:unix2dos\ ${GENERATED_DIR}/vkformat_str.c>
