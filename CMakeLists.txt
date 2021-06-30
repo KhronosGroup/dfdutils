@@ -132,7 +132,7 @@ set(PROJECT_CONFIG "${GENERATED_DIR}/${PROJECT_NAME}Config.cmake")
 set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
-set(NAMESPACE "${PROJECT_NAME}::")
+set(NAMESPACE "KhronosGroup::")
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
