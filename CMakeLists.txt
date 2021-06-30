@@ -84,7 +84,7 @@ target_include_directories(dfdutils PUBLIC
     $<BUILD_INTERFACE:${GENERATED_DIR}>)
 target_include_directories(dfdutils PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}>)
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/KhronosGroup>)
 add_dependencies(dfdutils mkvk)
 
 # Tests
