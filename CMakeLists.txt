@@ -3,12 +3,13 @@ cmake_minimum_required(VERSION 3.12)
 option(BUILD_TESTS "Build test executables" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 option(HUNTER_ENABLED "Use the Hunter package manager" OFF)
+option(BUILD_FOR_LIBKTX "Build dfdutils for use in KTX-Software" OFF)
 
 if(HUNTER_ENABLED)
     include(cmake/HunterGate.cmake)
     HunterGate(
-        URL "https://github.com/cpp-pm/hunter/archive/v0.23.305.tar.gz"
-        SHA1 "fc8d7a6dac2fa23681847b3872d88d3839b657b0"
+        URL "https://github.com/cpp-pm/hunter/archive/v0.23.309.tar.gz"
+        SHA1 "15e84e1f23eb079360db727d373dab82890420b7"
     )
 endif()
 
@@ -31,7 +32,7 @@ else()
         URL https://github.com/KhronosGroup/DataFormat/archive/1f8c8529b712e4b2b17bde798636d9ea550af3ed.tar.gz
     )
     FetchContent_Populate(khronosdataformat)
-    file(INSTALL "${khronosdataformat_SOURCE_DIR}/headers/khr_df.h" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/third_party/KhronosGroup")
+    file(INSTALL "${khronosdataformat_SOURCE_DIR}/headers/khr_df.h" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/third_party/KHR")
     set(DataFormat_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/third_party")
 
     FetchContent_Declare(
@@ -86,6 +87,9 @@ target_include_directories(dfdutils PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/KhronosGroup>)
 add_dependencies(dfdutils mkvk)
+if(BUILD_FOR_LIBKTX)
+    target_compile_definitions(dfdutils PUBLIC LIBKTX)
+endif()
 
 # Tests
 
@@ -156,13 +160,13 @@ install(
 
 install(
     FILES ${DFDUTILS_HDR_FILES}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/KhronosGroup
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/KHR
 )
 
 if(NOT HUNTER_ENABLED)
     install(
-        FILES "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/KhronosGroup
+        FILES "${GENERATED_DIR}/KHR/khr_df.h"
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/KHR
     )
     target_include_directories(dfdutils PUBLIC
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)

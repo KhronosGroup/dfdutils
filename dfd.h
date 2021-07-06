@@ -18,7 +18,7 @@
 #ifndef _DFD_H_
 #define _DFD_H_
 
-#include <KhronosGroup/khr_df.h>
+#include "KHR/khr_df.h"
 
 #ifdef __cplusplus
 extern "C" {

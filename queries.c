@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <KhronosGroup/khr_df.h>
+#include "KHR/khr_df.h"
 #include "dfd.h"
 
 /**

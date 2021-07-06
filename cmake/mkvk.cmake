@@ -18,30 +18,41 @@ endif()
 # Hunter DataFormat source is already patched
 if(NOT HUNTER_ENABLED)
     list(APPEND mkvkpatchdataformatsources_input
-        "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h")
+        "${DataFormat_INCLUDE_DIR}/KHR/khr_df.h")
     list(APPEND mkvkpatchdataformatsources_output
-        "${GENERATED_DIR}/KhronosGroup/khr_df.h")
+        "${GENERATED_DIR}/KHR/khr_df.h")
 
-    if(CMAKE_HOST_WIN32)
-        add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
-            COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-            COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch || true"
-            DEPENDS ${mkvkpatchdataformatsources_input}
-            WORKING_DIRECTORY ${GENERATED_DIR}
-            COMMENT "Patching DataFormat header"
-            VERBATIM
-        )
+    if(BUILD_FOR_LIBKTX)
+        if(CMAKE_HOST_WIN32)
+            add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KHR/khr_df.h" "${GENERATED_DIR}/KHR/khr_df.h"
+                COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch || true"
+                DEPENDS ${mkvkpatchdataformatsources_input}
+                WORKING_DIRECTORY ${GENERATED_DIR}
+                COMMENT "Patching DataFormat header"
+                VERBATIM
+            )
+        else()
+            add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KHR/khr_df.h" "${GENERATED_DIR}/KHR/khr_df.h"
+                COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch || true
+                DEPENDS ${mkvkpatchdataformatsources_input}
+                WORKING_DIRECTORY ${GENERATED_DIR}
+                COMMENT "Patching DataFormat header"
+                VERBATIM
+            )
+        endif()
     else()
-        add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
-            COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KhronosGroup/khr_df.h" "${GENERATED_DIR}/KhronosGroup/khr_df.h"
-            COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/khr_df.patch || true
-            DEPENDS ${mkvkpatchdataformatsources_input}
-            WORKING_DIRECTORY ${GENERATED_DIR}
-            COMMENT "Patching DataFormat header"
-            VERBATIM
-        )
+            add_custom_command(OUTPUT ${mkvkpatchdataformatsources_output}
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${DataFormat_INCLUDE_DIR}/KHR/khr_df.h" "${GENERATED_DIR}/KHR/khr_df.h"
+                DEPENDS ${mkvkpatchdataformatsources_input}
+                WORKING_DIRECTORY ${GENERATED_DIR}
+                COMMENT "Copying DataFormat header"
+                VERBATIM
+            )
     endif()
 
     add_custom_target(mkvkpatchdataformatsources
@@ -57,29 +68,41 @@ list(APPEND mkvkpatchvulkansources_output
     "${GENERATED_DIR}/vulkan/vulkan_core.h"
     "${GENERATED_DIR}/vulkan/vk_platform.h")
 
-if(CMAKE_HOST_WIN32)
-    add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
-        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-        COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch || true"
-        DEPENDS ${mkvkpatchvulkansources_input}
-        WORKING_DIRECTORY ${GENERATED_DIR}
-        COMMENT "Patching Vulkan headers"
-        VERBATIM
-    )
-else()
-    add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
-        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
-        COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
-        COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch || true
-        DEPENDS ${mkvkpatchvulkansources_input}
-        WORKING_DIRECTORY ${GENERATED_DIR}
-        COMMENT "Patching Vulkan headers"
-        VERBATIM
-    )
-endif()
+    if(BUILD_FOR_LIBKTX)
+        if(CMAKE_HOST_WIN32)
+            add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
+                COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
+                COMMAND ${BASH_EXECUTABLE} -c "patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch || true"
+                DEPENDS ${mkvkpatchvulkansources_input}
+                WORKING_DIRECTORY ${GENERATED_DIR}
+                COMMENT "Patching Vulkan headers"
+                VERBATIM
+            )
+        else()
+            add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
+                COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
+                COMMAND patch -p2 -N -i ${PROJECT_SOURCE_DIR}/third_party/vulkan_core.patch || true
+                DEPENDS ${mkvkpatchvulkansources_input}
+                WORKING_DIRECTORY ${GENERATED_DIR}
+                COMMENT "Patching Vulkan headers"
+                VERBATIM
+            )
+        endif()
+    else()
+            add_custom_command(OUTPUT ${mkvkpatchvulkansources_output}
+                COMMAND ${CMAKE_COMMAND} -E make_directory "${GENERATED_DIR}"
+                COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vk_platform.h" "${GENERATED_DIR}/vulkan/vk_platform.h"
+                COMMAND ${CMAKE_COMMAND} -E copy "${Vulkan_INCLUDE_DIR}/vulkan/vulkan_core.h" "${GENERATED_DIR}/vulkan/vulkan_core.h"
+                DEPENDS ${mkvkpatchvulkansources_input}
+                WORKING_DIRECTORY ${GENERATED_DIR}
+                COMMENT "Copying Vulkan headers"
+                VERBATIM
+            )
+    endif()
 
 add_custom_target(mkvkpatchvulkansources
     DEPENDS ${mkvkpatchvulkansources_output}

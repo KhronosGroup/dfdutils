@@ -8,7 +8,7 @@
  * @brief Helper functions for colourspaces.
  */
 
-#include <KhronosGroup/khr_df.h>
+#include "KHR/khr_df.h"
 #include "dfd.h"
 
 typedef struct s_PrimaryMapping {

@@ -1,5 +1,5 @@
---- a/third_party/KhronosGroup/khr_df.h
-+++ b/third_party/KhronosGroup/khr_df.h
+--- a/third_party/KHR/khr_df.h
++++ b/third_party/KHR/khr_df.h
 @@ -305,6 +305,7 @@ typedef enum _khr_df_model_e {
      /* PowerVR Texture Compression */
      KHR_DF_MODEL_PVRTC         = 164U,
@@ -31,7 +31,7 @@
 +    KHR_DF_CHANNEL_UASTC_RRR   = 4U,
 +    KHR_DF_CHANNEL_UASTC_RRRG  = 5U,
 +    KHR_DF_CHANNEL_UASTC_RG    = 6U,
- 
+
      /* Common channel names shared by multiple formats */
      KHR_DF_CHANNEL_COMMON_LUMA    =  0U,
 @@ -557,7 +567,7 @@ typedef enum _khr_df_transfer_e {
