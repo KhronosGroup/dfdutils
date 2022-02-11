@@ -1,11 +1,13 @@
 #!/usr/bin/perl
+# -*- tab-width: 4; -*-
+# vi: set sw=2 ts=4 expandtab:
 
 # Copyright 2019-2020 The Khronos Group Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 # N.B. 0 arguments, read stdin, write stdout.
 # 1 argument, read ARGV[0], write stdout.
-# 2 arguments, read ARGV[1], write ARGV[2].
+# 2 arguments, read ARGV[0], write ARGV[1].
 if (@ARGV > 1) {
     open (my $output, '>', $ARGV[1]);
     select $output;
@@ -130,7 +132,8 @@ while ($line = <>) {
             }
         }
 
-        # If we weren't VK_FORMAT_ plus a channel, we might be a compressed format, that ends "_BLOCK"
+        # If we weren't VK_FORMAT_ plus a channel, we might be a compressed
+        # format, that ends "_BLOCK"
         # N.B. We don't currently process compressed formats here.
         # They're essentially all special cases anyway.
         # The decoding code that this is derived from is retained for future work.
