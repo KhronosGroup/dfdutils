@@ -29,9 +29,9 @@ print " ************************************************************************
 # Loop over each line of input
 while ($line = <>) {
 
-    # Match any format that starts with a channel description (some number of R, G, B, A or a number)
-    # In PERL, "=~" performs a regex operation on the left argument
-    # m/<regex>/ matches the regular expression
+    # Match any format that starts with a channel description (some number
+    # of R, G, B, A or a number). # In PERL, "=~" performs a regex
+    # operation on the left argument m/<regex>/ matches the regular expression
     if ($line =~ m/VK_FORMAT_[RGBA0-9]+_/) {
 
         # Set $format to the enum identifier
@@ -136,7 +136,8 @@ while ($line = <>) {
         # format, that ends "_BLOCK"
         # N.B. We don't currently process compressed formats here.
         # They're essentially all special cases anyway.
-        # The decoding code that this is derived from is retained for future work.
+        # The code for compressed formats from the code the above is
+        # derived from is retained here for future work.
     } elsif (0 && $line =~ m/(VK_FORMAT_[A-Z0-9x_]+_BLOCK(_EXT)?)/) {
 
         # Extract the format identifier from the rest of the line
