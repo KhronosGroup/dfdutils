@@ -16,6 +16,11 @@ matrix:
         - VULKAN_SDK_VER="1.2.176"
       compiler: gcc # clang is tested by macOS build
     - os: osx
+      addons:
+        homebrew:
+          packages:
+          - doxygen
+          update: false
       env:
         - VULKAN_SDK_VER="1.2.176.1"
         - VULKAN_INSTALL_DIR="$HOME/build/vulkansdk-macos-$VULKAN_SDK_VER"
@@ -58,8 +63,7 @@ script:
     make
     ;;
   osx)
-    make &&
-    ls out/doc
+    make
     ;;
     esac
 
@@ -71,7 +75,8 @@ deploy:
   github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   local-dir: out/doc/html
   on:
-    branch: master
+    #branch: master
+    branch: fix_ci
     condition: $TRAVIS_OS_NAME = osx
     #tags: true
 
