@@ -58,7 +58,7 @@ script:
     make
     ;;
   osx)
-    make
+    make &&
     ls out/doc
     ;;
     esac
