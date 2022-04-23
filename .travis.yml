@@ -8,19 +8,13 @@ language: cpp
 
 matrix:
   include:
-    # works on Focal
-    - os: linux
-      addons:
-      dist: focal
-      env:
-        - VULKAN_SDK_VER="1.2.176"
-      compiler: gcc # clang is tested by macOS build
+#    - os: linux
+#      addons:
+#      dist: focal
+#      env:
+#        - VULKAN_SDK_VER="1.2.176"
+#      compiler: gcc # clang is tested by macOS build
     - os: osx
-      addons:
-        homebrew:
-          packages:
-          - doxygen
-          update: false
       env:
         - VULKAN_SDK_VER="1.2.176.1"
         - VULKAN_INSTALL_DIR="$HOME/build/vulkansdk-macos-$VULKAN_SDK_VER"
@@ -63,7 +57,10 @@ script:
     make
     ;;
   osx)
-    make
+    make &&
+    pwd &&
+    ls out/doc &&
+    ls /Users/travis/build/KhronosGroup/dfdutils/out/doc
     ;;
     esac
 
@@ -75,8 +72,7 @@ deploy:
   github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   local-dir: out/doc/html
   on:
-    #branch: master
-    branch: fix_ci
+    branch: master
     condition: $TRAVIS_OS_NAME = osx
     #tags: true
 
