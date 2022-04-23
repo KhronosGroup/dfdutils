@@ -4,10 +4,6 @@
 # CI build script for Travis.
 # See https://docs.travis-ci.com/user/multi-os/ for more info.
 
-branches:
-  except:
-  - ktxsw
-
 language: cpp
 
 matrix:
@@ -15,24 +11,17 @@ matrix:
     # works on Focal
     - os: linux
       addons:
-        apt:
-          sources:
-            - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages:
-            - gcc-7
-            - g++-7
       dist: focal
       env:
-        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-        - VULKAN_SDK_VER="1.1.85"
+        - VULKAN_SDK_VER="1.2.176"
       compiler: gcc # clang is tested by macOS build
     - os: osx
       env:
-        - VULKAN_SDK_VER="1.1.85.0"
+        - VULKAN_SDK_VER="1.2.176.1"
         - VULKAN_INSTALL_DIR="$HOME/build/vulkansdk-macos-$VULKAN_SDK_VER"
         - VULKAN_SDK="$VULKAN_INSTALL_DIR/macOS"
       compiler: clang
-      osx_image: xcode11.4
+      osx_image: xcode13.2
 
 #env:
   #global:
@@ -70,6 +59,7 @@ script:
     ;;
   osx)
     make
+    ls out/doc
     ;;
     esac
 
