@@ -10,12 +10,15 @@ var dfd_8h =
       [ "i_NORMALIZED_FORMAT_BIT", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885aee1d46c7de9e9af5540b3e5cb34dd49a", null ],
       [ "i_SIGNED_FORMAT_BIT", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a4644990ab274ccb2e43795479ecf2679", null ],
       [ "i_FLOAT_FORMAT_BIT", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a04d79d8c4a60bbaf6df834b52b74e8a5", null ],
+      [ "i_COMPRESSED_FORMAT_BIT", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a8011775c8828e46316f8d5bc0a5d8095", null ],
+      [ "i_YUVSDA_FORMAT_BIT", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885acea4f7dd37ebace7798fb2198ad298b9", null ],
       [ "i_UNSUPPORTED_ERROR_BIT", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885aa3b2e9e2832f972a1fb6e5bc2f7af153", null ],
       [ "i_UNSUPPORTED_NONTRIVIAL_ENDIANNESS", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885aaa9525c2c7f46a55190cc8dd0c302f52", null ],
       [ "i_UNSUPPORTED_MULTIPLE_SAMPLE_LOCATIONS", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a0bac5c476d9047888a3b4d1e9b4a4e69", null ],
       [ "i_UNSUPPORTED_MULTIPLE_PLANES", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a4521e78ca0efe59d81c734f0415a4927", null ],
       [ "i_UNSUPPORTED_CHANNEL_TYPES", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a5ab79ecd9d298dab8fe96bfcbd2fec2b", null ],
-      [ "i_UNSUPPORTED_MIXED_CHANNELS", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a9a264528cb77ba9c211646e6e9d3a643", null ]
+      [ "i_UNSUPPORTED_MIXED_CHANNELS", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a9a264528cb77ba9c211646e6e9d3a643", null ],
+      [ "i_UNSUPPORTED_BLOCK_DIMENSIONS", "dfd_8h.html#a5fb66436d15b003cea05fe5b9087b885a632b61e4ab08260216aa0148b4fc588f", null ]
     ] ],
     [ "VkCompScheme", "dfd_8h.html#a827684b6627a2b30e5240e877bad6391", [
       [ "c_BC1_RGB", "dfd_8h.html#a827684b6627a2b30e5240e877bad6391a105c7eebe0aa422bc30572679b532722", null ],
@@ -47,12 +50,16 @@ var dfd_8h =
       [ "s_UFLOAT", "dfd_8h.html#acdd657246eb8bac137bc91593446e97fad64d75f49b3170d9e420e5466e247016", null ],
       [ "s_SRGB", "dfd_8h.html#acdd657246eb8bac137bc91593446e97fabea47b2afb93339b6b593070b5ac7bc1", null ]
     ] ],
+    [ "createDFDAlpha", "dfd_8h.html#a1c3a0f20600309272f01499be1af5a96", null ],
     [ "createDFDCompressed", "dfd_8h.html#a5e613f8715a3975049f32a53d8d699df", null ],
     [ "createDFDDepthStencil", "dfd_8h.html#a723d5957ee29f189576b2414fd1d8191", null ],
     [ "createDFDPacked", "dfd_8h.html#a0df7add5a00bbddca41ea3ef99ac6546", null ],
+    [ "createDFDPackedPadded", "dfd_8h.html#a08956304e6fe3e3878004e65d833d246", null ],
     [ "createDFDUnpacked", "dfd_8h.html#a109c7fb13563c870bfe356793e87cedb", null ],
-    [ "findMapping", "dfd_8h.html#a57508798175c04c17e7c08a3796c647b", null ],
+    [ "findMapping", "dfd_8h.html#a697661f13587a900c01e1f91e897bf97", null ],
+    [ "getPrimaries", "dfd_8h.html#a53e3fd9df1655ef615adf9a9db5c28cf", null ],
     [ "interpretDFD", "dfd_8h.html#a05314c6736bcd2f24c0ec146770e8df5", null ],
-    [ "printDFD", "dfd_8h.html#a525d9375b2b7afb13aa4dd7885f6dcd4", null ],
+    [ "printDFD", "dfd_8h.html#a851b78f893e487730cc46b4025a0f004", null ],
+    [ "printDFDJSON", "dfd_8h.html#a3b6f297e4e70036f71bae4d80a2c113b", null ],
     [ "vk2dfd", "dfd_8h.html#a309b881ad99bf42e5eb80ac46d5df370", null ]
 ];

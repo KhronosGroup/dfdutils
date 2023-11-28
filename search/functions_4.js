@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['printdfd_0',['printDFD',['../dfd_8h.html#a525d9375b2b7afb13aa4dd7885f6dcd4',1,'printDFD(uint32_t *DFD):&#160;printdfd.c'],['../printdfd_8c.html#a525d9375b2b7afb13aa4dd7885f6dcd4',1,'printDFD(uint32_t *DFD):&#160;printdfd.c']]]
+  ['interpretdfd_0',['interpretdfd',['../dfd_8h.html#a05314c6736bcd2f24c0ec146770e8df5',1,'interpretDFD(const uint32_t *DFD, InterpretedDFDChannel *R, InterpretedDFDChannel *G, InterpretedDFDChannel *B, InterpretedDFDChannel *A, uint32_t *wordBytes):&#160;interpretdfd.c'],['../interpretdfd_8c.html#a05314c6736bcd2f24c0ec146770e8df5',1,'interpretDFD(const uint32_t *DFD, InterpretedDFDChannel *R, InterpretedDFDChannel *G, InterpretedDFDChannel *B, InterpretedDFDChannel *A, uint32_t *wordBytes):&#160;interpretdfd.c']]]
 ];
