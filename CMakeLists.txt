@@ -23,6 +23,21 @@ add_library(vk2dfd_obj OBJECT vk2dfd.c)
 add_library(dfd2vk_obj OBJECT dfd2vk.c)
 
 #
+# --- DFD Utils library ---
+#
+add_library(dfdutils STATIC 
+    createdfd.c
+    colourspaces.c
+    dfd.h
+    interpretdfd.c
+    printdfd.c
+    queries.c
+    vk2dfd.c
+    vk2dfd.inl
+    vulkan/vk_platform.h
+    vulkan/vulkan_core.h)
+
+#
 # --- CHECK FOR PERL ---
 #
 find_package(Perl)
@@ -79,37 +94,27 @@ endif()
 #
 add_executable(testcreatedfd
     createdfdtest.c
-    createdfd.c
-    printdfd.c
-    vk2dfd.c
-    ${CMAKE_SOURCE_DIR}/vk2dfd.inl
 )
 target_compile_options(testcreatedfd PRIVATE -W -Wall -pedantic -O2 -Wno-strict-aliasing -Wno-unused-parameter)
+target_link_libraries(testcreatedfd PRIVATE dfdutils)
 
 #
 # --- Build testinterpretdfd ---
 #
 add_executable(testinterpretdfd
     interpretdfdtest.c
-    interpretdfd.c
-    createdfd.c
-    printdfd.c
 )
 target_compile_options(testinterpretdfd PRIVATE -W -Wall -pedantic -O -Wno-unused-parameter)
+target_link_libraries(testinterpretdfd PRIVATE dfdutils)
 
 #
 # --- Build testbidirectionalmapping ---
 #
 add_executable(testbidirectionalmapping
     testbidirectionalmapping.c
-    interpretdfd.c
-    createdfd.c
-    dfd2vk.c
-    vk2dfd.c
-    ${CMAKE_SOURCE_DIR}/dfd2vk.inl
-    ${CMAKE_SOURCE_DIR}/vk2dfd.inl
 )
 target_compile_options(testbidirectionalmapping PRIVATE -W -Wall -pedantic -g -Wno-unused-parameter)
+target_link_libraries(testbidirectionalmapping PRIVATE dfdutils)
 
 #
 # --- DOXYGEN TARGET ---
