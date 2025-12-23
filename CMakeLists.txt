@@ -37,6 +37,11 @@ add_library(dfdutils STATIC
     vulkan/vk_platform.h
     vulkan/vulkan_core.h)
 
+target_include_directories(dfdutils
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 #
 # --- CHECK FOR PERL ---
 #
