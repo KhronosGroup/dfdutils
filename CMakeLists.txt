@@ -95,7 +95,6 @@ endif()
 add_executable(testcreatedfd
     createdfdtest.c
 )
-target_compile_options(testcreatedfd PRIVATE -W -Wall -pedantic -O2 -Wno-strict-aliasing -Wno-unused-parameter)
 target_link_libraries(testcreatedfd PRIVATE dfdutils)
 
 #
@@ -104,7 +103,6 @@ target_link_libraries(testcreatedfd PRIVATE dfdutils)
 add_executable(testinterpretdfd
     interpretdfdtest.c
 )
-target_compile_options(testinterpretdfd PRIVATE -W -Wall -pedantic -O -Wno-unused-parameter)
 target_link_libraries(testinterpretdfd PRIVATE dfdutils)
 
 #
@@ -113,7 +111,6 @@ target_link_libraries(testinterpretdfd PRIVATE dfdutils)
 add_executable(testbidirectionalmapping
     testbidirectionalmapping.c
 )
-target_compile_options(testbidirectionalmapping PRIVATE -W -Wall -pedantic -g -Wno-unused-parameter)
 target_link_libraries(testbidirectionalmapping PRIVATE dfdutils)
 
 #
