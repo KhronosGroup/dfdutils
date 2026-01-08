@@ -4,6 +4,8 @@ project(dfdutils C)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+option( DFDUTILS_TESTAPPS "Enable DFD Utils tests." ON)
+
 # Output directory used for all build artifacts
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -15,32 +17,6 @@ include_directories(${CMAKE_SOURCE_DIR})
 if(DEFINED ENV{VULKAN_SDK})
     include_directories($ENV{VULKAN_SDK}/include)
 endif()
-
-#
-# --- Object files for switch generation ---
-#
-add_library(vk2dfd_obj OBJECT vk2dfd.c)
-add_library(dfd2vk_obj OBJECT dfd2vk.c)
-
-#
-# --- DFD Utils library ---
-#
-add_library(dfdutils STATIC 
-    createdfd.c
-    colourspaces.c
-    dfd.h
-    interpretdfd.c
-    printdfd.c
-    queries.c
-    vk2dfd.c
-    vk2dfd.inl
-    vulkan/vk_platform.h
-    vulkan/vulkan_core.h)
-
-target_include_directories(dfdutils
-        PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-)
 
 #
 # --- CHECK FOR PERL ---
@@ -56,8 +32,7 @@ if (Perl_FOUND)
     add_custom_command(
             OUTPUT ${CMAKE_SOURCE_DIR}/dfd2vk.inl
             COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/makedfd2vk.pl
-            ${CMAKE_SOURCE_DIR}/vulkan/vulkan_core.h
-            ${CMAKE_SOURCE_DIR}/dfd2vk.inl
+            ${CMAKE_SOURCE_DIR}/vulkan/vulkan_core.h ${CMAKE_SOURCE_DIR}/dfd2vk.inl
             DEPENDS makedfd2vk.pl vulkan/vulkan_core.h
             COMMENT "Generating dfd2vk.inl using makedfd2vk.pl"
     )
@@ -72,8 +47,7 @@ if (Perl_FOUND)
     add_custom_command(
             OUTPUT ${CMAKE_SOURCE_DIR}/vk2dfd.inl
             COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/makevk2dfd.pl
-            ${CMAKE_SOURCE_DIR}/vulkan/vulkan_core.h
-            ${CMAKE_SOURCE_DIR}/vk2dfd.inl
+            ${CMAKE_SOURCE_DIR}/vulkan/vulkan_core.h ${CMAKE_SOURCE_DIR}/vk2dfd.inl
             DEPENDS makevk2dfd.pl vulkan/vulkan_core.h
             COMMENT "Generating vk2dfd.inl using makevk2dfd.pl"
     )
@@ -81,52 +55,99 @@ if (Perl_FOUND)
     add_custom_target(vk2dfd_inl
             DEPENDS ${CMAKE_SOURCE_DIR}/vk2dfd.inl
     )
-
-    add_custom_target(switches
-            DEPENDS
-            dfd2vk_inl
-            vk2dfd_inl
-    )
-
-    add_dependencies(dfd2vk_inl dfd2vk_obj)
-    add_dependencies(vk2dfd_inl vk2dfd_obj)
 else()
     message(STATUS "Perl NOT found — using pre-existing inline switches.")
 endif()
 
 #
-# --- Build testcreatedfd ---
+# --- DFD Utils library ---
 #
-add_executable(testcreatedfd
-    createdfdtest.c
-)
-target_link_libraries(testcreatedfd PRIVATE dfdutils)
+add_library(dfdutils STATIC
+        createdfd.c
+        colourspaces.c
+        dfd.h
+        interpretdfd.c
+        printdfd.c
+        queries.c
+        vk2dfd.c
+        dfd2vk.c
+        vulkan/vk_platform.h
+        vulkan/vulkan_core.h)
 
-#
-# --- Build testinterpretdfd ---
-#
-add_executable(testinterpretdfd
-    interpretdfdtest.c
-)
-target_link_libraries(testinterpretdfd PRIVATE dfdutils)
+add_dependencies(dfdutils dfd2vk_inl)
+add_dependencies(dfdutils vk2dfd_inl)
 
-#
-# --- Build testbidirectionalmapping ---
-#
-add_executable(testbidirectionalmapping
-    testbidirectionalmapping.c
+target_include_directories(dfdutils
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
-target_link_libraries(testbidirectionalmapping PRIVATE dfdutils)
+
+if(DFDUTILS_TESTAPPS)
+
+    #
+    # --- Build testcreatedfd ---
+    #
+    add_executable(testcreatedfd
+        createdfdtest.c
+    )
+    target_link_libraries(testcreatedfd PRIVATE dfdutils)
+
+    #
+    # --- Build testinterpretdfd ---
+    #
+    add_executable(testinterpretdfd
+        interpretdfdtest.c
+    )
+    target_link_libraries(testinterpretdfd PRIVATE dfdutils)
+
+    #
+    # --- Build testbidirectionalmapping ---
+    #
+    add_executable(testbidirectionalmapping
+        testbidirectionalmapping.c
+    )
+    target_link_libraries(testbidirectionalmapping PRIVATE dfdutils)
+endif()
 
 #
 # --- DOXYGEN TARGET ---
 #
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-    add_custom_target(doc
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/dfdutils.doxy
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        COMMENT "Running Doxygen to build documentation"
+    # Global
+    set( DOXYGEN_OUTPUT_DIRECTORY doc)
+    set( DOXYGEN_OPTIMIZE_OUTPUT_FOR_C YES )
+    set( DOXYGEN_EXTRACT_LOCAL_CLASSES NO )
+    set( DOXYGEN_HIDE_UNDOC_MEMBERS YES )
+    set( DOXYGEN_CASE_SENSE_NAMES YES )
+    set( DOXYGEN_SHOW_USED_FILES NO )
+    set( DOXYGEN_VERBATIM_HEADERS NO )
+    set( DOXYGEN_CLANG_ASSISTED_PARSING NO )
+    set( DOXYGEN_ALPHABETICAL_INDEX NO )
+    set( DOXYGEN_DISABLE_INDEX YES )
+    set( DOXYGEN_DISABLE_INDEX NO )
+    set( DOXYGEN_GENERATE_TREEVIEW YES )
+    set( DOXYGEN_GENERATE_LATEX NO )
+    set( DOXYGEN_GENERATE_HTML YES )
+    set( DOXYGEN_GENERATE_MAN YES )
+    set( DOXYGEN_MAN_OUTPUT man )
+    # This is to get timestamps with older versions of doxygen.
+    # older
+    set( DOXYGEN_HTML_TIMESTAMP YES )
+    set( DOXYGEN_TIMESTAMP YES )
+
+    doxygen_add_docs(
+            docs
+            ${CMAKE_SOURCE_DIR}/dfd.h
+            ${CMAKE_SOURCE_DIR}/colourspaces.c
+            ${CMAKE_SOURCE_DIR}/createdfd.c
+            ${CMAKE_SOURCE_DIR}/interpretdfd.c
+            ${CMAKE_SOURCE_DIR}/printdfd.c
+            ${CMAKE_SOURCE_DIR}/queries.c
+            ${CMAKE_SOURCE_DIR}/endswap.c
+            ${CMAKE_SOURCE_DIR}/dfd2vk.c
+            ${CMAKE_SOURCE_DIR}/vk2dfd.c
+            COMMENT "Running Doxygen to build documentation"
     )
 else()
     message(WARNING "Doxygen not found. 'doc' target will not be available.")
