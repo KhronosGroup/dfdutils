@@ -5,13 +5,14 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 option( DFDUTILS_TESTAPPS "Enable DFD Utils tests." ON)
+option( DFDUTILS_EMBED "Embed DFD Utils library via object library" OFF)
 
 # Output directory used for all build artifacts
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Optional VULKAN_SDK include directory
 if(DEFINED ENV{VULKAN_SDK})
@@ -30,39 +31,44 @@ if (Perl_FOUND)
     # --- GENERATE dfd2vk.inl ---
     #
     add_custom_command(
-            OUTPUT ${CMAKE_SOURCE_DIR}/dfd2vk.inl
-            COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/makedfd2vk.pl
-            ${CMAKE_SOURCE_DIR}/vulkan/vulkan_core.h ${CMAKE_SOURCE_DIR}/dfd2vk.inl
+            OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/dfd2vk.inl
+            COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/makedfd2vk.pl
+            ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vulkan_core.h ${CMAKE_CURRENT_SOURCE_DIR}/dfd2vk.inl
             DEPENDS makedfd2vk.pl vulkan/vulkan_core.h
             COMMENT "Generating dfd2vk.inl using makedfd2vk.pl"
     )
 
     add_custom_target(dfd2vk_inl
-            DEPENDS ${CMAKE_SOURCE_DIR}/dfd2vk.inl
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dfd2vk.inl
     )
 
     #
     # --- GENERATE vk2dfd.inl ---
     #
     add_custom_command(
-            OUTPUT ${CMAKE_SOURCE_DIR}/vk2dfd.inl
-            COMMAND ${PERL_EXECUTABLE} ${CMAKE_SOURCE_DIR}/makevk2dfd.pl
-            ${CMAKE_SOURCE_DIR}/vulkan/vulkan_core.h ${CMAKE_SOURCE_DIR}/vk2dfd.inl
+            OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/vk2dfd.inl
+            COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/makevk2dfd.pl
+            ${CMAKE_CURRENT_SOURCE_DIR}/vulkan/vulkan_core.h ${CMAKE_CURRENT_SOURCE_DIR}/vk2dfd.inl
             DEPENDS makevk2dfd.pl vulkan/vulkan_core.h
             COMMENT "Generating vk2dfd.inl using makevk2dfd.pl"
     )
 
     add_custom_target(vk2dfd_inl
-            DEPENDS ${CMAKE_SOURCE_DIR}/vk2dfd.inl
+            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/vk2dfd.inl
     )
 else()
     message(STATUS "Perl NOT found — using pre-existing inline switches.")
 endif()
 
+set(DFDUTILS_LINK_TYPE STATIC)
+if(DFDUTILS_EMBED)
+    set(DFDUTILS_LINK_TYPE OBJECT)
+endif()
+
 #
 # --- DFD Utils library ---
 #
-add_library(dfdutils STATIC
+add_library(dfdutils ${DFDUTILS_LINK_TYPE}
         createdfd.c
         colourspaces.c
         dfd.h
@@ -73,13 +79,21 @@ add_library(dfdutils STATIC
         dfd2vk.c
         vulkan/vk_platform.h
         vulkan/vulkan_core.h)
+set_target_properties(dfdutils PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 add_dependencies(dfdutils dfd2vk_inl)
 add_dependencies(dfdutils vk2dfd_inl)
 
 target_include_directories(dfdutils
         PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/KHR>
+        $<INSTALL_INTERFACE:KHR2>
+)
+
+# ALSO install dfdutils headers
+install(DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/KHR/
+        DESTINATION include/KHR
 )
 
 if(DFDUTILS_TESTAPPS)
@@ -138,15 +152,15 @@ if(DOXYGEN_FOUND)
 
     doxygen_add_docs(
             docs
-            ${CMAKE_SOURCE_DIR}/dfd.h
-            ${CMAKE_SOURCE_DIR}/colourspaces.c
-            ${CMAKE_SOURCE_DIR}/createdfd.c
-            ${CMAKE_SOURCE_DIR}/interpretdfd.c
-            ${CMAKE_SOURCE_DIR}/printdfd.c
-            ${CMAKE_SOURCE_DIR}/queries.c
-            ${CMAKE_SOURCE_DIR}/endswap.c
-            ${CMAKE_SOURCE_DIR}/dfd2vk.c
-            ${CMAKE_SOURCE_DIR}/vk2dfd.c
+            dfd.h
+            colourspaces.c
+            createdfd.c
+            interpretdfd.c
+            printdfd.c
+            queries.c
+            endswap.c
+            dfd2vk.c
+            vk2dfd.c
             COMMENT "Running Doxygen to build documentation"
     )
 else()
