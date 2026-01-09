@@ -38,10 +38,6 @@ if (Perl_FOUND)
             COMMENT "Generating dfd2vk.inl using makedfd2vk.pl"
     )
 
-    add_custom_target(dfd2vk_inl
-            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dfd2vk.inl
-    )
-
     #
     # --- GENERATE vk2dfd.inl ---
     #
@@ -52,13 +48,17 @@ if (Perl_FOUND)
             DEPENDS makevk2dfd.pl vulkan/vulkan_core.h
             COMMENT "Generating vk2dfd.inl using makevk2dfd.pl"
     )
-
-    add_custom_target(vk2dfd_inl
-            DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/vk2dfd.inl
-    )
 else()
     message(STATUS "Perl NOT found — using pre-existing inline switches.")
 endif()
+
+add_custom_target(dfd2vk_inl
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/dfd2vk.inl
+)
+
+add_custom_target(vk2dfd_inl
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/vk2dfd.inl
+)
 
 set(DFDUTILS_LINK_TYPE STATIC)
 if(DFDUTILS_EMBED)
