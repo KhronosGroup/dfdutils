@@ -78,9 +78,9 @@ jobs:
 
     - name: Run test programs
       run: |
-        build/testcreatedfd
-        build/testinterpretdfd
-        build/testbidirectionalmapping
+        build/${{ matrix.config }}/testcreatedfd
+        build/${{ matrix.config }}testinterpretdfd
+        build/${{ matrix.config }}testbidirectionalmapping
 
     - name: Upload artifact libdfdutils
       if: matrix.config == 'Release'
