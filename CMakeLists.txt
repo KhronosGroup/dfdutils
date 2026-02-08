@@ -70,6 +70,7 @@ add_library(dfdutils OBJECT
         colourspaces.c
         dfd.h
         interpretdfd.c
+        KHR/khr_df.h
         printdfd.c
         queries.c
         vk2dfd.c
