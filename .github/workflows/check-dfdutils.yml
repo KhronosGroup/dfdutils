@@ -76,6 +76,9 @@ jobs:
     - name: Build dfdutils Release config
       run: cmake --build ${{ env.BUILD_DIR }} --config=${{ matrix.config }}
 
+    - name: Check latest .inl files are checked in
+      run: git diff --quiet *.inl
+
     - name: Run test programs
       run: |
         build/${{ matrix.config }}/testcreatedfd
