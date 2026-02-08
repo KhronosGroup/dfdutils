@@ -112,7 +112,7 @@ jobs:
     # Add a dependency to the build job
     needs: check-dfdutils
     # Only deploy when building `main`.
-      if: matrix.config == 'Release'
+    if: matrix.config == 'Release'
   #    if: github.ref == 'refs/heads/main'
     # Only deploy when building for a release tag. Note that filtering in
     # on: means the only tags the workflow runs for are release tags.
