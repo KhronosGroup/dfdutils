@@ -71,6 +71,9 @@ jobs:
 #        # included (used for version creation)
 #        fetch-depth: 0
 
+    - name: Install Doxygen
+      uses: ssciwr/doxygen-install@v1
+
     - name: Configure dfdutils
       run: cmake -B ${{ env.BUILD_DIR }} -G "${{ matrix.generator }}"
     - name: Build dfdutils
