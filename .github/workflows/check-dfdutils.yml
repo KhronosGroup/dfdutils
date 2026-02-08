@@ -111,8 +111,6 @@ jobs:
     name: Deploy to GitHub Pages
     # Add a dependency to the build job
     needs: check-dfdutils
-    if: ${{ matrix.config == 'Release' }}
-    #if: ${{ steps.deployment.outputs.page_url != '' }}
     # Only deploy when building `main`.
   #  if: github.ref == 'refs/heads/main'
     # Only deploy when building for a release tag. Note that filtering in
