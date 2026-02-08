@@ -78,6 +78,9 @@ jobs:
       run: cmake -B ${{ env.BUILD_DIR }} -G "${{ matrix.generator }}"
     - name: Build dfdutils
       run: cmake --build ${{ env.BUILD_DIR }} --config=${{ matrix.config }}
+    - name: Build docs
+      if: matrix.config == 'Release'
+      run: cmake --build ${{ env.BUILD_DIR }} --config=${{ matrix.config }} --target docs
 
     - name: Check latest .inl files are checked in
       run: git diff --quiet *.inl
@@ -98,7 +101,7 @@ jobs:
 #        path: ${{env.BUILD_DIR}}/Release/*dfdutils*
 
     - name: Upload generated HTML documentation for GitHub Pages
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && matrix.config == 'Release'
       id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
@@ -109,6 +112,7 @@ jobs:
     # Add a dependency to the build job
     needs: check-dfdutils
     # Only deploy when building `main`.
+      if: matrix.config == 'Release'
   #    if: github.ref == 'refs/heads/main'
     # Only deploy when building for a release tag. Note that filtering in
     # on: means the only tags the workflow runs for are release tags.
