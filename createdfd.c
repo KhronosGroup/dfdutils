@@ -120,7 +120,7 @@ static void writeSample(uint32_t *DFD, int sampleNo, int channel,
     sample[KHR_DF_SAMPLEWORD_BITOFFSET] =
         (offset << KHR_DF_SAMPLESHIFT_BITOFFSET) |
         ((bits - 1) << KHR_DF_SAMPLESHIFT_BITLENGTH) |
-        (channel << KHR_DF_SAMPLESHIFT_CHANNELID);
+        ((uint32_t)channel << KHR_DF_SAMPLESHIFT_CHANNELID);
 
     sample[KHR_DF_SAMPLEWORD_SAMPLEPOSITION_ALL] = 0;
 
